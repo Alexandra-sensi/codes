@@ -1,0 +1,54 @@
+let img;
+let cellSize;
+
+function preload() {
+  img = loadImage('data/portrait_large.jpg');
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  img.resize(img.width, img.height);
+  rectMode(CENTER);
+
+  createEasyCam();
+  // put setup code here
+}
+
+function draw() {
+  // put drawing code here
+  background(0);
+  //image(img, 0, 0)
+  //console.log(img.get(mouseX, mouseY));
+  noStroke();
+
+  cellSize = map(250, 0, width, 2, 80);
+
+  //ortho();
+  //lights();
+  translate(-img.width / 2, -img.height / 2)
+  //translate(width / 2 - img.width / 2, height / 2 - img.height / 2);
+
+  // Algorythm image drawing
+  for (var x = 0; x < img.width / cellSize; x++) {
+    for (var y = 0; y < img.height / cellSize; y++) {
+      let c = img.get(x * cellSize, y * cellSize);
+      let b = brightness(c);
+      let w = map(b * (200 * 0.005), 0, 255, 0, 20);
+
+      push();
+      translate(x * cellSize, y * cellSize, w * sin(frameCount * 0.01) * 20);
+      rotate(frameCount * 0.05);
+      fill(255);
+      //ellipse(0, 0, w, w);
+      sphere(w);
+      //rect(0, 0, w * 2, w * 0.5);
+      pop();
+
+      // fill(0, green(c), 0, green(c));
+      // fill(red(c), 0, 0, red(c));
+      // rect(x + 10, y + 10, 1, 1);
+      // fill(0, 0, blue(c));
+      // rect(x + 20, y + 20, 1, 1);
+    }
+  }
+}
