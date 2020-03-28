@@ -1,0 +1,68 @@
+let num = 16;
+let previousY = [];
+let osc;
+let envelope;
+
+function preload() {
+  // put preload code here
+}
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  osc = new p5.TriOsc();
+  osc.amp(0.1);
+
+  envelope = new p5.Env();
+  envelope.setADSR(0.2, 0, 0.2, 0.1);
+
+  //osc.start();
+}
+
+function draw() {
+  background(0, 0, 0);
+
+  stroke(255);
+  line(0, height / 2, width, height / 2);
+
+  noStroke();
+  let dist = width / num;
+
+  for (let i = 0; i < num; i++) {
+    //déplacer l'origine au centre
+    //convertir les fonctions cartésiennes en polair
+    let rayon = 200; //i * 10; // augmenter la valeur de l'amplitude à chaque ellipse
+    //amplitude *sin(vitesse)
+    let x = dist / 2 + dist * i;
+    let y = rayon * sin((frameCount * (i + 20)) * 0.002); //une frame par seconde qui avance
+
+    console.log(y);
+    if (y == 0 || positif(previousY[i]) != positif(y)) {
+      fill(255, 0, 0);
+
+      let midiValue = map(mouseX, 0, width, 34, 69) + i * 2;
+      let frequency = midiToFreq(midiValue);
+
+      osc.freq(frequency);
+      //plus le chiffre est petite plus c'est grave
+      envelope.play(osc);
+    } else {
+      fill(255);
+    }
+
+    previousY[i] = y;
+
+    push();
+    translate(x, height / 2 + y);
+    ellipse(0, 0, 20, 20);
+    pop();
+  }
+}
+
+function positif(nombre) {
+  if (nombre < 0) {
+    return false;
+  } else {
+    return true;
+  }
+
+}
